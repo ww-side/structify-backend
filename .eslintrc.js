@@ -27,9 +27,8 @@ module.exports = {
         groups: [
           ['^\\w', '^@?\\w'],
           ['^@nestjs'],
-          ['^~\\/config'],
-          ['^~\\/database'],
           ['^~\\/modules'],
+          ['^~\\/shared'],
           ['^\\.'],
         ],
       },
