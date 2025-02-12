@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsString } from '~/shared/lib/validation';
 
-export class LoginDTO {
+export class SignInDTO {
   @IsString()
   @IsNotEmpty()
   username: string;

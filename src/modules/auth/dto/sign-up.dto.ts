@@ -1,6 +1,6 @@
 import { IsNotEmpty, IsOptional, IsString } from '~/shared/lib/validation';
 
-export class RegisterDTO {
+export class SignUpDTO {
   @IsString()
   @IsNotEmpty()
   username: string;
