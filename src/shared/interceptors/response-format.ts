@@ -13,9 +13,12 @@ export class ResponseFormatInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler) {
     return next.handle().pipe(
       map(data => {
+        const { message, statusCode, ...restData } = data;
+
         return {
-          statusCode: HttpStatus.OK,
-          data,
+          statusCode: statusCode ?? HttpStatus.OK,
+          message,
+          data: restData,
         };
       }),
     );

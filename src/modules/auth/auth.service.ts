@@ -14,7 +14,7 @@ import { User } from '~/modules/user/user.entity';
 import { ResponseFormatInterceptor } from '~/shared/interceptors/response-format';
 import { bcrypt } from '~/shared/lib/bcrypt';
 
-import { LoginDTO, RegisterDTO } from './dto';
+import { SignInDTO, SignUpDTO } from './dto';
 
 @Injectable()
 @UseInterceptors(ResponseFormatInterceptor)
@@ -25,8 +25,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(registerDto: RegisterDTO): Promise<User> {
-    const { username, firstName, lastName, password } = registerDto;
+  async signUp(signUpDTO: SignUpDTO) {
+    const { username, firstName, lastName, password } = signUpDTO;
 
     if (!username || !password) {
       throw new HttpException(
@@ -55,8 +55,8 @@ export class AuthService {
     return this.userRepository.save(user);
   }
 
-  async login(loginDto: LoginDTO): Promise<{ accessToken: string }> {
-    const { username, password } = loginDto;
+  async signIn(signInDTO: SignInDTO) {
+    const { username, password } = signInDTO;
 
     if (!username || !password) {
       throw new HttpException(
@@ -77,7 +77,7 @@ export class AuthService {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
-    const payload = { username: user.username, sub: user.id };
+    const payload = { username: user.username, id: user.id };
 
     const accessToken = this.jwtService.sign(payload);
 
