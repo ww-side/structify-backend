@@ -1,0 +1,30 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type View {
+  id: String!
+  name: String!
+}
+
+type Query {
+  views: [View!]!
+  view(id: Int!): View!
+}
+
+type Mutation {
+  createView(createViewInput: CreateViewInput!): View!
+  updateView(updateViewInput: UpdateViewInput!): View!
+  removeView(id: Int!): View!
+}
+
+input CreateViewInput {
+  """Example field (placeholder)"""
+  exampleField: Int!
+}
+
+input UpdateViewInput {
+  """Example field (placeholder)"""
+  exampleField: Int
+  id: Int!
+}
