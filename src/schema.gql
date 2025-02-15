@@ -1,0 +1,42 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type View {
+  id: String!
+  name: String!
+  formats: [String!]!
+  icon: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Query {
+  views: [View!]!
+  view(id: String!): View!
+}
+
+type Mutation {
+  createView(createViewInput: CreateViewInput!): View!
+  updateView(updateViewInput: UpdateViewInput!): View!
+  deleteView(id: String!): View!
+}
+
+input CreateViewInput {
+  name: String!
+  formats: [String!]!
+  icon: String
+}
+
+input UpdateViewInput {
+  name: String
+  formats: [String!]
+  icon: String
+  id: String!
+}
