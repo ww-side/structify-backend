@@ -1,35 +1,61 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
-import { ViewService } from './view.service';
-import { View } from './entities/view.entity';
+import { UseGuards } from '@nestjs/common';
+import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql';
+
+import { HeaderManagerService } from '~/modules/headers-manager/header-manager.service';
+
+import { GqlAuthGuard } from '~/shared/guards/gql-auth-guard';
+
 import { CreateViewInput } from './dto/create-view.input';
 import { UpdateViewInput } from './dto/update-view.input';
+import { View } from './view.entity';
+import { ViewService } from './view.service';
 
+@UseGuards(GqlAuthGuard)
 @Resolver(() => View)
 export class ViewResolver {
-  constructor(private readonly viewService: ViewService) {}
+  constructor(
+    private readonly viewService: ViewService,
+    private readonly reqHeadersService: HeaderManagerService,
+  ) {}
 
-  @Mutation(() => View)
-  createView(@Args('createViewInput') createViewInput: CreateViewInput) {
-    return this.viewService.create(createViewInput);
+  @Mutation(() => View, { name: 'createView' })
+  createView(
+    @Context('req') req: Request,
+    @Args('createViewInput') createViewInput: CreateViewInput,
+  ) {
+    const userId = this.reqHeadersService.getUserIdFromRequest(req);
+
+    return this.viewService.create({ createViewInput, userId });
   }
 
   @Query(() => [View], { name: 'views' })
-  findAll() {
-    return this.viewService.findAll();
+  findAll(@Context('req') req: Request) {
+    const id = this.reqHeadersService.getUserIdFromRequest(req);
+
+    return this.viewService.findAllById(id);
   }
 
   @Query(() => View, { name: 'view' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.viewService.findOne(id);
+  findOne(@Args('id') id: string, @Context('req') req: Request) {
+    const userId = this.reqHeadersService.getUserIdFromRequest(req);
+
+    return this.viewService.findOne({ id, userId });
   }
 
-  @Mutation(() => View)
-  updateView(@Args('updateViewInput') updateViewInput: UpdateViewInput) {
-    return this.viewService.update(updateViewInput.id, updateViewInput);
+  @Mutation(() => View, { name: 'updateView' })
+  updateView(
+    @Args('updateViewInput') updateViewInput: UpdateViewInput,
+    @Context('req') req: Request,
+  ) {
+    const userId = this.reqHeadersService.getUserIdFromRequest(req);
+
+    return this.viewService.update({ updateViewInput, userId });
   }
 
-  @Mutation(() => View)
-  removeView(@Args('id', { type: () => Int }) id: number) {
-    return this.viewService.remove(id);
+  @Mutation(() => View, { name: 'deleteView' })
+  delete(@Args('id') id: string, @Context('req') req: Request) {
+    const userId = this.reqHeadersService.getUserIdFromRequest(req);
+
+    return this.viewService.delete({ id, userId });
   }
 }

@@ -1,8 +1,8 @@
-import { IsNotEmpty, IsOptional, IsString } from '~/shared/lib/validation';
+import { IsOptional, IsString } from '~/shared/lib/validation';
 
-export class RegisterDTO {
+export class UpdateUserDTO {
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   username: string;
 
   @IsString()
@@ -14,6 +14,6 @@ export class RegisterDTO {
   lastName?: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   password: string;
 }

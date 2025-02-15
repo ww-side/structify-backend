@@ -5,26 +5,38 @@
 type View {
   id: String!
   name: String!
+  formats: [String!]!
+  icon: String
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  userId: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   views: [View!]!
-  view(id: Int!): View!
+  view(id: String!): View!
 }
 
 type Mutation {
   createView(createViewInput: CreateViewInput!): View!
   updateView(updateViewInput: UpdateViewInput!): View!
-  removeView(id: Int!): View!
+  deleteView(id: String!): View!
 }
 
 input CreateViewInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  name: String!
+  formats: [String!]!
+  icon: String
 }
 
 input UpdateViewInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  name: String
+  formats: [String!]
+  icon: String
+  id: String!
 }

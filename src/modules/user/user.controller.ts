@@ -7,15 +7,19 @@ import {
   Param,
   Patch,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
-import { AuthGuard } from '~/shared/guards/auth-guard';
-import { getTokenFromAuthHeader } from '~/shared/lib/token';
+import { UpdateUserDTO } from '~/modules/user/dto/update-user.dto';
 
-import { User } from './user.entity';
+import { AuthGuard } from '~/shared/guards/auth-guard';
+import { ResponseFormatInterceptor } from '~/shared/interceptors/response-format';
+import { getTokenFromAuthHeader, type TokenMeta } from '~/shared/lib/token';
+
 import { UserService } from './user.service';
 
+@UseInterceptors(ResponseFormatInterceptor)
 @UseGuards(AuthGuard)
 @Controller('user')
 export class UserController {
@@ -38,11 +42,11 @@ export class UserController {
 
   @Patch()
   async update(
-    @Body() updateData: Partial<User>,
+    @Body() updateData: UpdateUserDTO,
     @Headers('Authorization') authHeader: string,
   ) {
     const token = getTokenFromAuthHeader(authHeader);
-    const id = this.jwtService.decode(token).id;
+    const id = this.jwtService.decode<TokenMeta>(token).id;
 
     return this.userService.update({ id, updateData });
   }

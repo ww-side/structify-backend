@@ -8,6 +8,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 
+import { UpdateUserDTO } from '~/modules/user/dto/update-user.dto';
+
 import { User } from './user.entity';
 
 @Injectable()
@@ -39,7 +41,7 @@ export class UserService {
     return user;
   }
 
-  async update({ id, updateData }: { id: string; updateData: Partial<User> }) {
+  async update({ id, updateData }: { id: string; updateData: UpdateUserDTO }) {
     if (updateData.username) {
       const existingUser = await this.userRepository.findOne({
         where: { username: updateData.username },

@@ -2,8 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+
+import { View } from '~/modules/view/view.entity';
 
 @Entity('users')
 export class User {
@@ -24,4 +27,7 @@ export class User {
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @OneToMany(() => View, view => view.user)
+  views: View[];
 }
