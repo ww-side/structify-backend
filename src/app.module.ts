@@ -4,6 +4,7 @@ import { AuthModule } from '~/modules/auth/auth.module';
 import { HeadersManagerModule } from '~/modules/headers-manager/headers-manager.module';
 import { UserModule } from '~/modules/user/user.module';
 
+import { ColumnModule } from './modules/column/column.module';
 import { AppConfigModule } from './modules/config/config.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { GqlModule } from './modules/gql/gql.module';
@@ -18,6 +19,7 @@ import { ViewModule } from './modules/view/view.module';
     AuthModule,
     UserModule,
     HeadersManagerModule,
+    ColumnModule,
   ],
 })
 export class AppModule {}

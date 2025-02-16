@@ -1,8 +1,9 @@
 import {
-  Column,
+  Column as Col,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
   UpdateDateColumn,
@@ -10,6 +11,7 @@ import {
 
 import { Field, ObjectType } from '@nestjs/graphql';
 
+import { Column } from '~/modules/column/column.entity';
 import { User } from '~/modules/user/user.entity';
 import { ViewFormat } from '~/modules/view/types/view-format';
 
@@ -20,15 +22,15 @@ export class View {
   @Field()
   id: string;
 
-  @Column()
+  @Col()
   @Field()
   name: string;
 
-  @Column('simple-array')
+  @Col('simple-array')
   @Field(() => [String])
   formats: ViewFormat[];
 
-  @Column({ nullable: true })
+  @Col({ nullable: true })
   @Field({ nullable: true })
   icon: string;
 
@@ -44,7 +46,10 @@ export class View {
   user: User;
 
   @RelationId((view: View) => view.user)
-  @Column()
+  @Col()
   @Field()
   userId: string;
+
+  @OneToMany(() => Column, column => column.view)
+  columns: Column[];
 }

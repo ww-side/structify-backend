@@ -16,12 +16,12 @@ import { User } from './user.entity';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
   async delete(userId: string) {
-    const res = await this.userRepository.delete(userId);
+    const res = await this.userRepo.delete(userId);
 
     if (res.affected === 0) {
       throw new NotFoundException(`User with ID ${userId} not found`);
@@ -30,7 +30,7 @@ export class UserService {
 
   async me(token: string) {
     const id = this.jwtService.decode(token).id;
-    const user = await this.userRepository.findOne({
+    const user = await this.userRepo.findOne({
       where: { id },
     });
 
@@ -43,7 +43,7 @@ export class UserService {
 
   async update({ id, updateData }: { id: string; updateData: UpdateUserDTO }) {
     if (updateData.username) {
-      const existingUser = await this.userRepository.findOne({
+      const existingUser = await this.userRepo.findOne({
         where: { username: updateData.username },
       });
       if (existingUser && existingUser.id !== id) {
@@ -51,7 +51,7 @@ export class UserService {
       }
     }
 
-    const user = await this.userRepository.findOne({
+    const user = await this.userRepo.findOne({
       where: { id },
     });
 
@@ -61,7 +61,7 @@ export class UserService {
 
     Object.assign(user, updateData);
 
-    await this.userRepository.save(user);
+    await this.userRepo.save(user);
 
     return user;
   }
