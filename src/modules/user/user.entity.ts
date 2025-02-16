@@ -1,11 +1,12 @@
 import {
-  Column,
+  Column as Col,
   CreateDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { Column } from '~/modules/column/column.entity';
 import { View } from '~/modules/view/view.entity';
 
 @Entity('users')
@@ -13,16 +14,16 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Col({ unique: true })
   username: string;
 
-  @Column({ nullable: true })
+  @Col({ nullable: true })
   firstName: string;
 
-  @Column({ nullable: true })
+  @Col({ nullable: true })
   lastName: string;
 
-  @Column()
+  @Col()
   password: string;
 
   @CreateDateColumn()
@@ -30,4 +31,7 @@ export class User {
 
   @OneToMany(() => View, view => view.user)
   views: View[];
+
+  @OneToMany(() => Column, column => column.user)
+  columns: Column[];
 }

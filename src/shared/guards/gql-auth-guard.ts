@@ -27,7 +27,7 @@ export class GqlAuthGuard implements CanActivate {
 
     try {
       req.user = this.jwtService.verify(token, {
-        secret: 'secret',
+        secret: process.env.JWT_SECRET,
       });
       return true;
     } catch {
