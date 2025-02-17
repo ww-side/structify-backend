@@ -9,6 +9,7 @@ import { AppConfigModule } from './modules/config/config.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { GqlModule } from './modules/gql/gql.module';
 import { ViewModule } from './modules/view/view.module';
+import { RowModule } from './modules/row/row.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { ViewModule } from './modules/view/view.module';
     UserModule,
     HeadersManagerModule,
     ColumnModule,
+    RowModule,
   ],
 })
 export class AppModule {}

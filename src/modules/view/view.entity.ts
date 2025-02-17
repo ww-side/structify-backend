@@ -12,6 +12,7 @@ import {
 import { Field, ObjectType } from '@nestjs/graphql';
 
 import { Column } from '~/modules/column/column.entity';
+import { Row } from '~/modules/row/row.entity';
 import { User } from '~/modules/user/user.entity';
 import { ViewFormat } from '~/modules/view/types/view-format';
 
@@ -52,4 +53,7 @@ export class View {
 
   @OneToMany(() => Column, column => column.view)
   columns: Column[];
+
+  @OneToMany(() => Row, row => row.view)
+  rows: Row[];
 }
