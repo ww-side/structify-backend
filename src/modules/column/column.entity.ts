@@ -3,11 +3,13 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 
+import { RowValue } from '~/modules/row-value/row-value.entity';
 import { User } from '~/modules/user/user.entity';
 import { View } from '~/modules/view/view.entity';
 
@@ -43,4 +45,7 @@ export class Column {
   @RelationId((column: Column) => column.user)
   @Col()
   userId: string;
+
+  @OneToMany(() => RowValue, rowValue => rowValue.row)
+  values: RowValue[];
 }
