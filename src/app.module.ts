@@ -8,6 +8,8 @@ import { ColumnModule } from './modules/column/column.module';
 import { AppConfigModule } from './modules/config/config.module';
 import { DatabaseModule } from './modules/database/database.module';
 import { GqlModule } from './modules/gql/gql.module';
+import { RowModule } from './modules/row/row.module';
+import { RowValueModule } from './modules/row-value/row-value.module';
 import { ViewModule } from './modules/view/view.module';
 
 @Module({
@@ -20,6 +22,8 @@ import { ViewModule } from './modules/view/view.module';
     UserModule,
     HeadersManagerModule,
     ColumnModule,
+    RowModule,
+    RowValueModule,
   ],
 })
 export class AppModule {}
