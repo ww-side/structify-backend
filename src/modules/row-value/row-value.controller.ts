@@ -8,14 +8,17 @@ import {
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { AuthGuard } from '~/shared/guards/auth-guard';
+import { ResponseFormatInterceptor } from '~/shared/interceptors/response-format';
 
 import { CreateRowValueDTO, UpdateRowValueDTO } from './dto';
 import { RowValueService } from './row-value.service';
 
 @UseGuards(AuthGuard)
+@UseInterceptors(ResponseFormatInterceptor)
 @Controller('row-value')
 export class RowValueController {
   constructor(private readonly rowValueService: RowValueService) {}
