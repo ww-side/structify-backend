@@ -34,9 +34,25 @@ export class RowService {
     }
   }
 
-  async findAll(viewId: string) {
-    const records = await this.rowRepo.find({ where: { viewId } });
-    return { records };
+  async findAll({
+    page = 1,
+    pageSize = 15,
+    viewId,
+  }: {
+    page?: number;
+    pageSize?: number;
+    viewId: string;
+  }) {
+    const skip = (page - 1) * pageSize; // Количество записей, которые нужно пропустить
+    const take = pageSize; // Количество записей для извлечения
+
+    const [rows, total] = await this.rowRepo.findAndCount({
+      where: { viewId },
+      skip,
+      take,
+    });
+
+    return { rows, total };
   }
 
   async delete(id: string) {

@@ -11,6 +11,7 @@ import { GqlModule } from './modules/gql/gql.module';
 import { RowModule } from './modules/row/row.module';
 import { RowValueModule } from './modules/row-value/row-value.module';
 import { ViewModule } from './modules/view/view.module';
+import { ViewDataModule } from './modules/view-data/view-data.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ViewModule } from './modules/view/view.module';
     ColumnModule,
     RowModule,
     RowValueModule,
+    ViewDataModule,
   ],
 })
 export class AppModule {}

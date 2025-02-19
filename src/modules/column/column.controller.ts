@@ -37,7 +37,7 @@ export class ColumnController {
   @Get()
   findAllById(@Request() req: Request) {
     const userId = this.reqHeadersService.getUserIdFromRequest(req);
-    return this.columnService.findAll(userId);
+    return this.columnService.findAll({ userId });
   }
 
   @Get(':id')

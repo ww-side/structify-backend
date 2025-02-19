@@ -38,7 +38,7 @@ export class RowController {
     @Param('id') viewId: string,
   ) {
     await this.rowValueService.validateUserAccess({ authHeader, viewId });
-    return this.rowService.findAll(viewId);
+    return this.rowService.findAll({ viewId });
   }
 
   @Delete(':id')

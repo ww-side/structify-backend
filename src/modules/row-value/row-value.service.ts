@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 import {
   ConflictException,
@@ -40,6 +40,28 @@ export class RowValueService {
 
     const rowValue = this.rowValueRepository.create(createRowValueDTO);
     return await this.rowValueRepository.save(rowValue);
+  }
+
+  async findViewRowValues({
+    viewId,
+    rowIds,
+  }: {
+    viewId: string;
+    rowIds: string[];
+  }) {
+    if (!rowIds.length) {
+      return { rowValues: [] };
+    }
+
+    const rowValues = await this.rowValueRepository.find({
+      where: { viewId, rowId: In(rowIds) },
+    });
+
+    if (!rowValues) {
+      throw new NotFoundException(`Values for view ${viewId} not found`);
+    }
+
+    return { rowValues };
   }
 
   async findRowValues(rowId: string) {
