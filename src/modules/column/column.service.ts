@@ -24,9 +24,15 @@ export class ColumnService {
     return await this.columnRepo.save(column);
   }
 
-  async findAll(userId: string) {
-    const columns = await this.columnRepo.find({ where: { userId } });
-    return { columns: columns };
+  async findAll({ userId, viewId }: { userId: string; viewId?: string }) {
+    const where: { userId: string; viewId?: string } = { userId };
+
+    if (viewId) {
+      where.viewId = viewId;
+    }
+
+    const columns = await this.columnRepo.find({ where });
+    return { columns };
   }
 
   async findOne({ id, userId }: { id: string; userId: string }) {

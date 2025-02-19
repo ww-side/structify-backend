@@ -1,3 +1,4 @@
+import * as process from 'node:process';
 import { Repository } from 'typeorm';
 
 import {
@@ -79,7 +80,9 @@ export class AuthService {
 
     const payload = { username: user.username, id: user.id };
 
-    const accessToken = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_SECRET,
+    });
 
     return { accessToken };
   }
