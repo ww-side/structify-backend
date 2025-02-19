@@ -1,21 +1,23 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   Headers,
   Param,
   Patch,
   Post,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 
 import { AuthGuard } from '~/shared/guards/auth-guard';
+import { ResponseFormatInterceptor } from '~/shared/interceptors/response-format';
 
 import { CreateRowValueDTO, UpdateRowValueDTO } from './dto';
 import { RowValueService } from './row-value.service';
 
 @UseGuards(AuthGuard)
+@UseInterceptors(ResponseFormatInterceptor)
 @Controller('row-value')
 export class RowValueController {
   constructor(private readonly rowValueService: RowValueService) {}
@@ -26,22 +28,13 @@ export class RowValueController {
   }
 
   @Get(':id')
-  async findAll(
-    @Headers('Authorization') authHeader: string,
-    @Param('id') viewId: string,
-  ) {
-    await this.rowValueService.validateUserAccess({ authHeader, viewId });
-    return this.rowValueService.findAll(viewId);
-  }
-
-  @Get('/detail/:id')
-  async findOne(
+  async findRowValues(
     @Headers('Authorization') authHeader: string,
     @Param('id') rowId: string,
     @Body() viewId: string,
   ) {
     await this.rowValueService.validateUserAccess({ authHeader, viewId });
-    return this.rowValueService.findOne(rowId);
+    return this.rowValueService.findRowValues(rowId);
   }
 
   @Patch(':id')
@@ -50,20 +43,11 @@ export class RowValueController {
     @Headers('Authorization') authHeader: string,
     @Body() updateRowValueDTO: UpdateRowValueDTO,
   ) {
+    const { row } = await this.rowValueService.findRowValue(id);
     await this.rowValueService.validateUserAccess({
       authHeader,
-      viewId: updateRowValueDTO.viewId,
+      viewId: row.viewId,
     });
     return this.rowValueService.update({ id, updateRowValueDTO });
-  }
-
-  @Delete(':id')
-  async delete(
-    @Param('id') id: string,
-    @Headers('Authorization') authHeader: string,
-    @Body() viewId: string,
-  ) {
-    await this.rowValueService.validateUserAccess({ authHeader, viewId });
-    return this.rowValueService.delete(id);
   }
 }

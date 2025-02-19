@@ -42,18 +42,24 @@ export class RowValueService {
     return await this.rowValueRepository.save(rowValue);
   }
 
-  async findAll(viewId: string) {
-    return await this.rowValueRepository.find({ where: { viewId } });
-  }
-
-  async findOne(rowId: string) {
+  async findRowValues(rowId: string) {
     const rowValue = await this.rowValueRepository.findOne({
       where: { rowId },
     });
     if (!rowValue) {
-      throw new NotFoundException(`Row values with ID ${rowId} not found`);
+      throw new NotFoundException(`Row with ID ${rowId} not found`);
     }
-    return rowValue;
+    return { row: rowValue };
+  }
+
+  async findRowValue(id: string) {
+    const rowValue = await this.rowValueRepository.findOne({
+      where: { id },
+    });
+    if (!rowValue) {
+      throw new NotFoundException(`Row values with ID ${id} not found`);
+    }
+    return { row: rowValue };
   }
 
   async update({
@@ -63,14 +69,10 @@ export class RowValueService {
     id: string;
     updateRowValueDTO: UpdateRowValueDTO;
   }) {
-    const rowValue = await this.findOne(id);
-    Object.assign(rowValue, updateRowValueDTO.value);
-    return await this.rowValueRepository.save(rowValue);
-  }
+    const { row } = await this.findRowValue(id);
 
-  async delete(id: string) {
-    const rowValue = await this.findOne(id);
-    await this.rowValueRepository.remove(rowValue);
+    Object.assign(row, { value: updateRowValueDTO.value });
+    return await this.rowValueRepository.save(row);
   }
 
   async validateUserAccess({

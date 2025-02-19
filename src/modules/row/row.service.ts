@@ -34,6 +34,11 @@ export class RowService {
     }
   }
 
+  async findAll(viewId: string) {
+    const records = await this.rowRepo.find({ where: { viewId } });
+    return { records };
+  }
+
   async delete(id: string) {
     const row = await this.rowRepo.findOne({ where: { id } });
 
