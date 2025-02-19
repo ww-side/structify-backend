@@ -1,7 +1,8 @@
 import {
-  Column as Col,
+  Column as TColumn,
   CreateDateColumn,
   Entity,
+  Index,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -10,20 +11,21 @@ import { Column } from '~/modules/column/column.entity';
 import { View } from '~/modules/view/view.entity';
 
 @Entity('users')
+@Index('IDX_USERNAME', ['username'])
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Col({ unique: true })
+  @TColumn({ unique: true })
   username: string;
 
-  @Col({ nullable: true })
+  @TColumn({ nullable: true })
   firstName: string;
 
-  @Col({ nullable: true })
+  @TColumn({ nullable: true })
   lastName: string;
 
-  @Col()
+  @TColumn()
   password: string;
 
   @CreateDateColumn()
