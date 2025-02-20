@@ -1,4 +1,3 @@
-import * as process from 'node:process';
 import { Repository } from 'typeorm';
 
 import {
@@ -15,14 +14,14 @@ import { User } from '~/modules/user/user.entity';
 import { ResponseFormatInterceptor } from '~/shared/interceptors/response-format';
 import { bcrypt } from '~/shared/lib/bcrypt';
 
-import { SignInDTO, SignUpDTO } from './dto';
+import { RefreshTokenDTO, SignInDTO, SignUpDTO } from './dto';
 
 @Injectable()
 @UseInterceptors(ResponseFormatInterceptor)
 export class AuthService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly userRepo: Repository<User>,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -36,7 +35,7 @@ export class AuthService {
       );
     }
 
-    const existingUser = await this.userRepository.findOne({
+    const existingUser = await this.userRepo.findOne({
       where: { username },
     });
 
@@ -46,44 +45,93 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const user = this.userRepository.create({
+    const user = this.userRepo.create({
       username,
       firstName,
       lastName,
       password: hashedPassword,
     });
 
-    return this.userRepository.save(user);
+    return this.userRepo.save(user);
   }
 
   async signIn(signInDTO: SignInDTO) {
     const { username, password } = signInDTO;
-
-    if (!username || !password) {
-      throw new HttpException(
-        'Username and password are required',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
-    const user = await this.userRepository.findOne({ where: { username } });
+    const user = await this.userRepo.findOne({ where: { username } });
 
     if (!user) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      throw new Error('Invalid credentials');
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
-
     if (!isPasswordValid) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      throw new Error('Invalid credentials');
     }
 
-    const payload = { username: user.username, id: user.id };
+    const { accessToken, refreshToken } = this.generateTokens({
+      userId: user.id,
+      username: user.username,
+    });
+
+    const hashedRefreshToken = await bcrypt.hash(refreshToken, 10);
+
+    await this.userRepo.update(user.id, {
+      refreshToken: hashedRefreshToken,
+    });
+
+    return { accessToken, refreshToken };
+  }
+
+  async refreshToken(refreshTokenDTO: RefreshTokenDTO) {
+    const { refreshToken } = refreshTokenDTO;
+    const payload = this.jwtService.verify(refreshToken, {
+      secret: process.env.JWT_REFRESH_SECRET,
+    });
+
+    const user = await this.userRepo.findOne({
+      where: { id: payload.id },
+    });
+
+    if (!user || !user.refreshToken) {
+      throw new Error('Invalid refresh token');
+    }
+
+    const isTokenValid = await bcrypt.compare(refreshToken, user.refreshToken);
+
+    if (!isTokenValid) {
+      throw new Error('Invalid refresh token');
+    }
+
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      this.generateTokens({ userId: user.id, username: user.username });
+
+    const newHashedRefreshToken = await bcrypt.hash(newRefreshToken, 10);
+    await this.userRepo.update(user.id, {
+      refreshToken: newHashedRefreshToken,
+    });
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+  }
+
+  private generateTokens({
+    userId,
+    username,
+  }: {
+    userId: string;
+    username: string;
+  }) {
+    const payload = { username, id: userId };
 
     const accessToken = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,
+      expiresIn: '1h',
     });
 
-    return { accessToken };
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: process.env.JWT_REFRESH_SECRET,
+      expiresIn: '30d',
+    });
+
+    return { accessToken, refreshToken };
   }
 }
