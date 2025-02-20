@@ -11,12 +11,12 @@ services:
       - DB_PORT=5432
       - DB_USERNAME=root
       - DB_PASSWORD=root
-      - DB_NAME=pets
+      - DB_NAME=structify
     depends_on:
       - postgres
     ports:
       - "8000:8000"
-    command: sh -c "pnpm install && pnpm run start:dev"
+    command: sh -c "npm install -g pnpm && pnpm install && pnpm run start"
 
   postgres:
     image: postgres:13
