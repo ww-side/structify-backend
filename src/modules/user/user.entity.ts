@@ -28,6 +28,9 @@ export class User {
   @TColumn()
   password: string;
 
+  @TColumn({ nullable: true })
+  refreshToken?: string;
+
   @CreateDateColumn()
   createdAt: Date;
 
