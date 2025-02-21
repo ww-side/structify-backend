@@ -25,7 +25,7 @@ export class AuthController {
     const tokens = await this.authService.signIn(signInDTO);
 
     res.cookie('refreshToken', tokens.refreshToken, {
-      httpOnly: true, // Доступен только на сервере
+      httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 30 * 24 * 60 * 60 * 1000,
