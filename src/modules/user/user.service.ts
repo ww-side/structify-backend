@@ -2,6 +2,8 @@ import { Repository } from 'typeorm';
 
 import {
   BadRequestException,
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -42,21 +44,33 @@ export class UserService {
   }
 
   async update({ id, updateData }: { id: string; updateData: UpdateUserDTO }) {
-    if (updateData.username) {
-      const existingUser = await this.userRepo.findOne({
-        where: { username: updateData.username },
-      });
-      if (existingUser && existingUser.id !== id) {
-        throw new BadRequestException('Username is already taken');
-      }
-    }
-
     const user = await this.userRepo.findOne({
       where: { id },
     });
 
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    if (updateData.username || updateData.email) {
+      const existingUser = await this.userRepo.findOne({
+        where: [{ username: updateData.username }, { email: updateData.email }],
+      });
+
+      if (existingUser) {
+        if (existingUser.username === updateData.username) {
+          throw new HttpException(
+            'Username already taken',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+        if (existingUser.email === updateData.email) {
+          throw new HttpException(
+            'Email already taken',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+      }
     }
 
     Object.assign(user, updateData);
