@@ -19,6 +19,9 @@ export class User {
   @TColumn({ unique: true })
   username: string;
 
+  @TColumn({ unique: true })
+  email: string;
+
   @TColumn({ nullable: true })
   firstName: string;
 
