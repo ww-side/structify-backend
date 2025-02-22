@@ -26,7 +26,7 @@ export class AuthService {
   ) {}
 
   async signUp(signUpDTO: SignUpDTO) {
-    const { username, firstName, lastName, password } = signUpDTO;
+    const { username, firstName, lastName, password, email } = signUpDTO;
 
     if (!username || !password) {
       throw new HttpException(
@@ -36,11 +36,19 @@ export class AuthService {
     }
 
     const existingUser = await this.userRepo.findOne({
-      where: { username },
+      where: [{ username }, { email }],
     });
 
     if (existingUser) {
-      throw new HttpException('Username already taken', HttpStatus.BAD_REQUEST);
+      if (existingUser.username === username) {
+        throw new HttpException(
+          'Username already taken',
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      if (existingUser.email === email) {
+        throw new HttpException('Email already taken', HttpStatus.BAD_REQUEST);
+      }
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,6 +57,7 @@ export class AuthService {
       username,
       firstName,
       lastName,
+      email,
       password: hashedPassword,
     });
 

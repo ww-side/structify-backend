@@ -1,9 +1,13 @@
-import { IsOptional, IsString } from '~/shared/lib/validation';
+import { IsEmail, IsOptional, IsString } from '~/shared/lib/validation';
 
 export class UpdateUserDTO {
   @IsString()
   @IsOptional()
   username: string;
+
+  @IsString()
+  @IsEmail()
+  email: string;
 
   @IsString()
   @IsOptional()
