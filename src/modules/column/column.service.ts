@@ -20,7 +20,11 @@ export class ColumnService {
     userId: string;
     createColumnDTO: CreateColumnDTO;
   }) {
-    const column = this.columnRepo.create({ ...createColumnDTO, userId });
+    const column = this.columnRepo.create({
+      ...createColumnDTO,
+      userId,
+      variants: createColumnDTO.variants ?? [],
+    });
     return await this.columnRepo.save(column);
   }
 

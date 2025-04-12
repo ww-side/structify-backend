@@ -26,6 +26,9 @@ export class Column {
   @Col()
   dataType: DataType;
 
+  @Col('text', { array: true, nullable: true })
+  variants: string[];
+
   @CreateDateColumn()
   createdAt: Date;
 
