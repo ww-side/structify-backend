@@ -49,6 +49,6 @@ export class CalendarService {
 
   async remove({ id, userId }: { id: string; userId: string }) {
     const event = await this.findOne({ id, userId });
-    await this.calendarRepository.remove(event);
+    return await this.calendarRepository.remove(event);
   }
 }
