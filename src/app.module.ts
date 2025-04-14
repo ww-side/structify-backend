@@ -4,6 +4,7 @@ import { AuthModule } from '~/modules/auth/auth.module';
 import { HeadersManagerModule } from '~/modules/headers-manager/headers-manager.module';
 import { UserModule } from '~/modules/user/user.module';
 
+import { CalendarModule } from './modules/calendar/calendar.module';
 import { ColumnModule } from './modules/column/column.module';
 import { AppConfigModule } from './modules/config/config.module';
 import { DatabaseModule } from './modules/database/database.module';
@@ -26,6 +27,7 @@ import { ViewDataModule } from './modules/view-data/view-data.module';
     RowModule,
     RowValueModule,
     ViewDataModule,
+    CalendarModule,
   ],
 })
 export class AppModule {}

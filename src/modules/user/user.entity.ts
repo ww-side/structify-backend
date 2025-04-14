@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
+import { Calendar } from '~/modules/calendar/calendar.entity';
 import { Column } from '~/modules/column/column.entity';
 import { View } from '~/modules/view/view.entity';
 
@@ -42,4 +43,7 @@ export class User {
 
   @OneToMany(() => Column, column => column.user)
   columns: Column[];
+
+  @OneToMany(() => Calendar, calendar => calendar.user)
+  calendarEvents: Calendar[];
 }
