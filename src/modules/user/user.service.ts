@@ -76,7 +76,8 @@ export class UserService {
     Object.assign(user, updateData);
 
     await this.userRepo.save(user);
+    const { refreshToken: _, ...rest } = user;
 
-    return user;
+    return rest;
   }
 }
